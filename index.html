@@ -19,6 +19,25 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: transform 0.1s ease-out;
         }
         .container {
             text-align: center;
@@ -27,6 +46,8 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 800px;
+            position: relative;
+            z-index: 1;
         }
         h1 {
             font-size: 3em;
@@ -46,7 +67,7 @@
         .image-container {
             width: 100%;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 auto 40px;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -56,15 +77,93 @@
             height: auto;
             display: block;
         }
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .nav-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
     </style>
 </head>
 <body>
+    <div class="bg-particles" id="particles"></div>
     <div class="container">
         <h1>AI Agent - 智能代理</h1>
         <p class="description">AI Agent 是能够自主理解、规划和执行复杂任务的智能系统，代表了人工智能技术的未来发展方向。</p>
         <div class="image-container">
             <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20agent%20artificial%20intelligence%20robot%20brain%20digital%20future%20technology&image_size=landscape_16_9" alt="AI Agent 智能代理">
         </div>
+        <div class="nav-menu">
+            <a href="ai-models.html" class="nav-btn">AI模型</a>
+            <a href="mcp.html" class="nav-btn">MCP</a>
+            <a href="skills.html" class="nav-btn">Skills</a>
+        </div>
     </div>
+    <script>
+        const particleContainer = document.getElementById('particles');
+        const particleCount = 50;
+        let particles = [];
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.width = (Math.random() * 15 + 5) + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particleContainer.appendChild(particle);
+            particles.push({
+                element: particle,
+                x: parseFloat(particle.style.left),
+                y: parseFloat(particle.style.top),
+                originalX: parseFloat(particle.style.left),
+                originalY: parseFloat(particle.style.top),
+                speed: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateParticles() {
+            particles.forEach((p, i) => {
+                const dx = (mouseX / window.innerWidth * 100 - p.originalX);
+                const dy = (mouseY / window.innerHeight * 100 - p.originalY);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const moveX = dx * 0.1 * p.speed;
+                const moveY = dy * 0.1 * p.speed;
+                
+                p.x = p.originalX + moveX;
+                p.y = p.originalY + moveY;
+                
+                p.element.style.transform = `translate(${moveX * 2}px, ${moveY * 2}px)`;
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+    </script>
 </body>
 </html>
